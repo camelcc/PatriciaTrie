@@ -1,20 +1,21 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+package com.pt.basic;
 
-public class SimplePatriciaTrie {
+import com.pt.AbstractPatriciaTrie;
+
+import java.util.*;
+
+public class PatriciaTrie implements AbstractPatriciaTrie {
     private static int CHARACTER_NOT_FOUND_INDEX = -1;
     private static int ARRAYS_ARE_EQUAL = 0;
 
-    public static class PatriciaTrieNode {
+    public static final class PtNode {
         char[] mChars = new char[0];
         boolean terminal = false;
-        ArrayList<PatriciaTrieNode> children = new ArrayList<>();
+        ArrayList<PtNode> children = new ArrayList<>();
 
-        public PatriciaTrieNode() {}
+        public PtNode() {}
 
-        public PatriciaTrieNode(char[] chars) {
+        public PtNode(char[] chars) {
             mChars = chars;
         }
     }
@@ -25,9 +26,9 @@ public class SimplePatriciaTrie {
      * is ignored.
      * This comparator imposes orderings that are inconsistent with equals.
      */
-    static final class PTNodeComparator implements Comparator<PatriciaTrieNode> {
+    public static final class PTNodeComparator implements Comparator<PtNode> {
         @Override
-        public int compare(PatriciaTrieNode p1, PatriciaTrieNode p2) {
+        public int compare(PtNode p1, PtNode p2) {
             if (p1.mChars[0] == p2.mChars[0]) return 0;
             return p1.mChars[0] < p2.mChars[0] ? -1 : 1;
         }
@@ -35,14 +36,19 @@ public class SimplePatriciaTrie {
     final static PTNodeComparator PTNODE_COMPARATOR = new PTNodeComparator();
 
     private int mWordsCount = 0;
-    private PatriciaTrieNode mRoot = new PatriciaTrieNode();
+    private PtNode mRoot = new PtNode();
 
     public int getWordsCount() {
         return mWordsCount;
     }
 
-    public PatriciaTrieNode getRoot() {
+    public PtNode getRoot() {
         return mRoot;
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        return new DictionaryIterator(mRoot);
     }
 
     public void addWord(String word) {
@@ -50,7 +56,7 @@ public class SimplePatriciaTrie {
         mWordsCount++;
         char[] chars = word.toCharArray();
 
-        PatriciaTrieNode current = mRoot;
+        PtNode current = mRoot;
         int charIndex = 0;
         int differentCharIndex = 0; // Set by the loop to the index of the char that differs
         int nodeIndex = findIndexOfChar(current, chars[charIndex]);
@@ -70,7 +76,7 @@ public class SimplePatriciaTrie {
         if (CHARACTER_NOT_FOUND_INDEX == nodeIndex) {
             // No node at this point to accept the word. Create one.
             final int insertionIndex = findInsertionIndex(current, chars[charIndex]);
-            final PatriciaTrieNode node = new PatriciaTrieNode(Arrays.copyOfRange(chars, charIndex, chars.length));
+            final PtNode node = new PtNode(Arrays.copyOfRange(chars, charIndex, chars.length));
             node.terminal = true;
             current.children.add(insertionIndex, node);
             checkStack(current);
@@ -86,7 +92,7 @@ public class SimplePatriciaTrie {
                     // current nodes children must be empty
                     // The new word matches the full old word and extends past it.
                     // We only have to create a new node and add it to the end of this.
-                    final PatriciaTrieNode node = new PatriciaTrieNode(Arrays.copyOfRange(chars, charIndex+differentCharIndex, chars.length));
+                    final PtNode node = new PtNode(Arrays.copyOfRange(chars, charIndex+differentCharIndex, chars.length));
                     node.terminal = true;
                     current.children = new ArrayList<>();
                     current.children.add(node);
@@ -99,7 +105,7 @@ public class SimplePatriciaTrie {
                 } else {
                     // Partial prefix match only. We have to replace the current node with a node
                     // containing the current prefix and create two new ones for the tails.
-                    PatriciaTrieNode splittedNode = new PatriciaTrieNode(Arrays.copyOfRange(current.mChars, differentCharIndex, current.mChars.length));
+                    PtNode splittedNode = new PtNode(Arrays.copyOfRange(current.mChars, differentCharIndex, current.mChars.length));
                     splittedNode.terminal = current.terminal;
                     splittedNode.children = current.children;
 
@@ -110,7 +116,7 @@ public class SimplePatriciaTrie {
                     if (charIndex + differentCharIndex >= chars.length) {
                         current.terminal = true;
                     } else {
-                        final PatriciaTrieNode newWord = new PatriciaTrieNode(Arrays.copyOfRange(chars,
+                        final PtNode newWord = new PtNode(Arrays.copyOfRange(chars,
                                 charIndex+differentCharIndex, chars.length));
                         newWord.terminal = true;
                         final int addIndex = chars[charIndex+differentCharIndex] > splittedNode.mChars[0] ? 1 : 0;
@@ -129,15 +135,15 @@ public class SimplePatriciaTrie {
      * @param character the character to search for.
      * @return the position of the character if it's there, or CHARACTER_NOT_FOUND_INDEX = -1 else.
      */
-    private static int findIndexOfChar(final PatriciaTrieNode node, char character) {
+    private static int findIndexOfChar(final PtNode node, char character) {
         final int insertionIndex = findInsertionIndex(node, character);
         if (node.children.size() <= insertionIndex) return CHARACTER_NOT_FOUND_INDEX;
         return character == node.children.get(insertionIndex).mChars[0] ? insertionIndex
                 : CHARACTER_NOT_FOUND_INDEX;
     }
 
-    private static int findInsertionIndex(final PatriciaTrieNode node, char character) {
-        final PatriciaTrieNode reference = new PatriciaTrieNode(new char[]{character});
+    private static int findInsertionIndex(final PtNode node, char character) {
+        final PtNode reference = new PtNode(new char[]{character});
         int result = Collections.binarySearch(node.children, reference, PTNODE_COMPARATOR);
         return result >= 0 ? result : -result - 1;
     }
@@ -175,8 +181,8 @@ public class SimplePatriciaTrie {
      * This method checks that all PtNodes in a node array are ordered as expected.
      * If they are, nothing happens. If they aren't, an exception is thrown.
      */
-    private static void checkStack(PatriciaTrieNode node) {
-        ArrayList<PatriciaTrieNode> stack = node.children;
+    private static void checkStack(PtNode node) {
+        ArrayList<PtNode> stack = node.children;
         int lastValue = -1;
         for (int i = 0; i < stack.size(); ++i) {
             int currentValue = stack.get(i).mChars[0];

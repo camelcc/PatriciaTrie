@@ -1,6 +1,7 @@
+package com.pt
 
-class DictionaryParser(val pt: SimplePatriciaTrie) {
-    private val validator = PTValidator()
+class DictionaryParser(private val pt: AbstractPatriciaTrie) {
+    private val validator = PTValidator(pt)
 
     fun feed(line: String) {
         if (line.startsWith("dictionary")) {
@@ -15,10 +16,9 @@ class DictionaryParser(val pt: SimplePatriciaTrie) {
         }
         val word = line.split(',')[0].split('=')[1]
         validator.addWord(word)
-        pt.addWord(word)
     }
 
     fun validate() {
-        validator.validate(pt.root)
+        validator.validate()
     }
 }

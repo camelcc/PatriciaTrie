@@ -1,3 +1,5 @@
+import com.pt.DictionaryParser
+import com.pt.compress.PatriciaTrie
 import java.io.*
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
@@ -8,7 +10,7 @@ fun main() {
         println("can not find dictionary file en_wordlist.combined")
         exitProcess(1)
     }
-    val pt = SimplePatriciaTrie()
+    val pt = PatriciaTrie()
     val parser = DictionaryParser(pt)
     val parseTime = measureTimeMillis {
         BufferedReader(InputStreamReader(FileInputStream(dictionary))).use { reader ->
