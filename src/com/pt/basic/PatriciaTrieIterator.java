@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class DictionaryIterator implements Iterator<String> {
+public class PatriciaTrieIterator implements Iterator<String> {
     private static final class Position {
         public Iterator<PatriciaTrie.PtNode> pos;
         public int length;
@@ -16,7 +16,7 @@ public class DictionaryIterator implements Iterator<String> {
     final StringBuilder mCurrentString;
     final LinkedList<Position> mPositions;
 
-    public DictionaryIterator(PatriciaTrie.PtNode root) {
+    public PatriciaTrieIterator(PatriciaTrie.PtNode root) {
         mCurrentString = new StringBuilder();
         mPositions = new LinkedList<>();
         final Position rootPos = new Position(root.children);

@@ -24,7 +24,11 @@ The pt.basic package contains the minimum implementation support only `add` oper
   
 ## pt.compress
 
-Introduce the compressing steps preparing for binary format.
+Introduce the compressing steps preparing for binary format. The dictionary compressing part is refer the AOSP v2 encoder.
+
+- Testing #2
+  The output file is around 1.3MB.
+
 
 
 

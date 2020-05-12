@@ -48,7 +48,7 @@ public class PatriciaTrie implements AbstractPatriciaTrie {
 
     @Override
     public Iterator<String> iterator() {
-        return new DictionaryIterator(mRoot);
+        return new PatriciaTrieIterator(mRoot);
     }
 
     public void addWord(String word) {

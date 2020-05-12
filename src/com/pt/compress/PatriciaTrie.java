@@ -129,7 +129,7 @@ public class PatriciaTrie implements AbstractPatriciaTrie {
 
     @Override
     public Iterator<String> iterator() {
-        return new DictionaryIterator(mRoot);
+        return new PatriciaTrieIterator(mRoot);
     }
 
     public void addWord(String word) {
@@ -206,6 +206,23 @@ public class PatriciaTrie implements AbstractPatriciaTrie {
                 checkStack(current.mChildren);
             }
         }
+    }
+
+    /**
+     * Recursively count the number of PtNodes in a given branch of the trie.
+     *
+     * @param nodeArray the parent node.
+     * @return the number of PtNodes in all the branch under this node.
+     */
+    public static int countPtNodes(final PtNodeArray nodeArray) {
+        final int nodeSize = nodeArray.mData.size();
+        int size = nodeSize;
+        for (int i = nodeSize - 1; i >= 0; --i) {
+            PtNode ptNode = nodeArray.mData.get(i);
+            if (null != ptNode.mChildren)
+                size += countPtNodes(ptNode.mChildren);
+        }
+        return size;
     }
 
     /**

@@ -1,5 +1,6 @@
-import com.pt.DictionaryParser
+import com.pt.PTParser
 import com.pt.compress.PatriciaTrie
+import com.pt.compress.PatriciaTrieEncoder
 import java.io.*
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
@@ -11,7 +12,7 @@ fun main() {
         exitProcess(1)
     }
     val pt = PatriciaTrie()
-    val parser = DictionaryParser(pt)
+    val parser = PTParser(pt)
     val parseTime = measureTimeMillis {
         BufferedReader(InputStreamReader(FileInputStream(dictionary))).use { reader ->
             var line = reader.readLine()
@@ -23,4 +24,10 @@ fun main() {
     }
     parser.validate()
     println("loading finished, took time $parseTime ms, words: ${pt.wordsCount}")
+
+    var encodeTime = measureTimeMillis {
+        val encoder = PatriciaTrieEncoder()
+        encoder.writeDictionary(pt)
+    }
+    println("dump finished, took time $encodeTime ms")
 }

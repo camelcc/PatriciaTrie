@@ -1,6 +1,6 @@
 package com.pt
 
-class DictionaryParser(private val pt: AbstractPatriciaTrie) {
+class PTParser(private val pt: AbstractPatriciaTrie) {
     private val validator = PTValidator(pt)
 
     fun feed(line: String) {
