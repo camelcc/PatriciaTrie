@@ -128,6 +128,16 @@ public class PatriciaTrie implements AbstractPatriciaTrie {
         }
     }
 
+    @Override
+    public boolean contains(String word) {
+        return false;
+    }
+
+    @Override
+    public List<String> search(String prefix) {
+        return new ArrayList<>();
+    }
+
     /**
      * Find the index of a char in a node array, if it exists.
      *

@@ -114,14 +114,6 @@ public class EncoderUtils {
      * d | the layout of each PtNode is described below.
      * e |
      * s
-     *
-     * f |
-     * o | forward link address, 3byte
-     * r | 1 byte = bbbbbbbb match
-     * w |   case 1xxxxxxx => -((xxxxxxx << 16) + (next byte << 8) + next byte)
-     * a |   otherwise => (xxxxxxx << 16) + (next byte << 8) + next byte
-     * r |
-     * dlinkaddress
      */
 
     /* Node (FusionDictionary.PtNode) layout is as follows:

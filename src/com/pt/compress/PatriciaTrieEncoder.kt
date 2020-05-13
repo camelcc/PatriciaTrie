@@ -4,14 +4,8 @@ import java.io.File
 import java.io.FileOutputStream
 
 class PatriciaTrieEncoder {
-    fun writeDictionary(pt: PatriciaTrie) {
-        val dict = File("./wordlist.dict")
-        if (dict.exists()) {
-            dict.delete()
-        }
-        dict.createNewFile()
-        val os = FileOutputStream(dict)
-
+    fun writeDictionary(file: File, pt: PatriciaTrie) {
+        val os = FileOutputStream(file)
         os.use { outputStream ->
             EncoderUtils.writeDictionaryHeader(outputStream)
 

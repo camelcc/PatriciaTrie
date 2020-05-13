@@ -1,4 +1,5 @@
 import com.pt.PTParser
+import com.pt.compress.BinaryPatriciaTrie
 import com.pt.compress.PatriciaTrie
 import com.pt.compress.PatriciaTrieEncoder
 import java.io.*
@@ -25,9 +26,30 @@ fun main() {
     parser.validate()
     println("loading finished, took time $parseTime ms, words: ${pt.wordsCount}")
 
+    val dict = File("./wordlist.dict")
+    if (dict.exists()) {
+        dict.delete()
+    }
+    dict.createNewFile()
     var encodeTime = measureTimeMillis {
         val encoder = PatriciaTrieEncoder()
-        encoder.writeDictionary(pt)
+        encoder.writeDictionary(dict, pt)
     }
     println("dump finished, took time $encodeTime ms")
+
+    val bpt = BinaryPatriciaTrie(dict)
+
+    var key = readLine()
+    while (key != null) {
+        if (key.length <= 3) {
+            println("skip suggestions")
+            continue
+        }
+        print("suggestions for $key: ")
+        for (v in bpt.search(key)) {
+            print("$v ")
+        }
+        println()
+        key = readLine()
+    }
 }

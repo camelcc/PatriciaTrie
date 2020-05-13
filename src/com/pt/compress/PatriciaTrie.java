@@ -208,6 +208,16 @@ public class PatriciaTrie implements AbstractPatriciaTrie {
         }
     }
 
+    @Override
+    public boolean contains(String word) {
+        return false;
+    }
+
+    @Override
+    public List<String> search(String prefix) {
+        return new ArrayList<>();
+    }
+
     /**
      * Recursively count the number of PtNodes in a given branch of the trie.
      *
